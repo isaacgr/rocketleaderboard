@@ -7,7 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rl-leaderboard"
+name = "rocketleaderboard"
 dynamic = ["version"]
 requires-python = ">= 3.12"
 description = 'Simple Rocket League leaderboard'
@@ -24,6 +24,6 @@ version = {file = "build/VERSION"}
 [tool.setuptools.packages.find]
 where = ["."]
 include = [
-    "rl-leaderboard*",
+    "rocketleaderboard*",
 ]
 

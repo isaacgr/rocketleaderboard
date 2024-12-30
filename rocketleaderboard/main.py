@@ -1,35 +1,15 @@
 import asyncio
 import aiohttp
-import argparse
 import logging
 import signal
 import sys
 from typing import Dict, Optional
 
+from rocketleaderboard.cmdline import parse_commandline
+
 FORMAT = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
 datefmt = "%Y-%m-%dT%H:%M:%S"
 log = logging.getLogger(__name__)
-
-
-def parse_commandline():
-    parser = argparse.ArgumentParser(
-        description='Host API server for rl-leaderboard',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-    )
-    serverGroup = parser.add_argument_group('HTTP Server')
-    serverGroup.add_argument(
-        '--host',
-        default='127.0.0.1',
-        help='IP address to host http server',
-    )
-    serverGroup.add_argument(
-        '--port',
-        type=int,
-        default=8080,
-        help='Port to host http server',
-    )
-    parser.add_argument('--log-file', help='File for logging')
-    return parser.parse_args()
 
 
 def main():
@@ -83,27 +63,37 @@ def main():
 def handle_exception(
     loop: asyncio.AbstractEventLoop,
     context: Dict[str, str],
-):
+    controller: ServerController
+) -> None:
     log.error(
-        'Exception caught. Shutting down. Message [%s]' % context.get('message'))
-    asyncio.create_task(shutdown(loop))
+        'Exception caught, shutting down. Message [%s]. Exception [%s]',
+        context.get('message'),
+        context.get('exception')
+    )
+    if not loop.is_closed:
+        loop.create_task(shutdown(loop, controller))
 
 
 async def shutdown(
     loop: asyncio.AbstractEventLoop,
-    signal: Optional[bool] = None,
+    controller: Optional[ServerController] = None,
+    signal: Optional[signal.Signals] = None
 ) -> None:
-    """Cleanup tasks tied to the service's shutdown."""
-    if signal:
-        logging.info(f"Received exit signal {signal.name}")
-    tasks = [t for t in asyncio.all_tasks() if t is not
-             asyncio.current_task()]
+    log.info("Received shutdown request.")
+    if controller:
+        log.info("Calling cleanup on objects")
+        await controller.shutdown()
+        log.info("Cleanup Complete.")
+
+    tasks = [
+        t for t in asyncio.all_tasks() if t is not asyncio.current_task()
+    ]
 
     [task.cancel() for task in tasks]
 
-    logging.info(f"Cancelling {len(tasks)} outstanding tasks")
+    log.info("Cancelling %s outstanding tasks", len(tasks))
     await asyncio.gather(*tasks, return_exceptions=True)
-    logging.info(f"Flushing metrics")
+    # probably not needed as start() will be cancelled with a Cancelled Error
     loop.stop()
 
 if __name__ == '__main__':
