@@ -6,21 +6,26 @@ def build_parser(
     version: str,
 ) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='Host API server for the Rocket League Leaderboard',
+        description='Host a GraphQL server for the Rocket League Leaderboard',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-
-    serverGroup = parser.add_argument_group('HTTP Server')
-    serverGroup.add_argument(
+    server_group = parser.add_argument_group('Server')
+    server_group.add_argument(
         '--host',
         default='127.0.0.1',
-        help='IP address to host http server',
+        help='IP address to host API on',
     )
-    serverGroup.add_argument(
+    server_group.add_argument(
         '--port',
-        type=int,
-        default=8080,
-        help='Port to host http server',
+        default=3475,
+        help='Port to host API on',
+    )
+
+    config_group = parser.add_argument_group('Config')
+    config_group.add_argument(
+        '--config',
+        default='/var/lib/rocketleaderboard/config.ini',
+        help='Location of the config.ini file'
     )
 
     debug_group = parser.add_argument_group('Debug')

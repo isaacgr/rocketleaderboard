@@ -1,63 +1,67 @@
 import asyncio
-import aiohttp
 import logging
 import signal
 import sys
 from typing import Dict, Optional
 
+from rocketleaderboard.config.ini import parse_ini_configuration
+from rocketleaderboard.controller import ServerController
 from rocketleaderboard.cmdline import parse_commandline
+from rocketleaderboard.typedefs import T_CONTROL_ADDRESS
 
 FORMAT = "%(asctime)s:%(levelname)s:%(name)s:%(message)s"
 datefmt = "%Y-%m-%dT%H:%M:%S"
 log = logging.getLogger(__name__)
 
 
-def main():
+async def start():
     options = parse_commandline()
-    if options.log_file:
-        logfile = options.log_file
-        logging.basicConfig(
-            filename=logfile,
-            level=logging.INFO,
-            format=FORMAT,
-            datefmt=datefmt,
-        )
-    else:
-        logging.basicConfig(
-            stream=sys.stdout,
-            level=logging.INFO,
-            format=FORMAT,
-            datefmt=datefmt,
-        )
+    log_level = logging.INFO if not options.debug else logging.DEBUG
+    logging.basicConfig(
+        stream=sys.stdout,
+        level=log_level,
+        format=FORMAT,
+        datefmt=datefmt,
+    )
 
+    config = parse_ini_configuration(options.config)
+    host = options.host
+    port = options.port
+
+    server_host: T_CONTROL_ADDRESS = {'host': host, 'port': port}
+
+    controller = ServerController.from_config(
+        server_host,
+        config,
+    )
     loop = asyncio.get_event_loop()
+    loop.set_exception_handler(
+        lambda loop, context: handle_exception(loop, context, controller)
+    )
     signals = (signal.SIGHUP, signal.SIGTERM, signal.SIGINT)
     for sig in signals:
         loop.add_signal_handler(
             sig,
-            lambda s=sig: asyncio.create_task(shutdown(loop, s))
+            lambda s=sig: asyncio.create_task(
+                shutdown(
+                    loop,
+                    controller,
+                    signal=s
+                )
+            )
         )
-    loop.set_exception_handler(handle_exception)
+    controller.start()
 
-    # TODO: add retries etc.
-    # should probably handle each of these seperately beyond logging
+    # TODO determine the best approach for running this method forever
+    while True:
+        await asyncio.sleep(1)
+
+
+def main():
     try:
-        loop.run_until_complete(start_server(
-            app,
-            host=options.host,
-            port=options.port,
-        ))
-    except (
-        aiohttp.client_exceptions.ClientConnectorError,
-        ConnectionResetError,
-    ) as e:
-        log.error(e)
-    except aiohttp.client_exceptions.ServerDisconnectedError as e:
-        log.error(e)
-    except aiohttp.client_exceptions.ContentTypeError as e:
-        log.error('Invalid response type [%s]' % e)
+        asyncio.run(start())
     except asyncio.CancelledError:
-        pass
+        log.info('Event loop closed')
 
 
 def handle_exception(
