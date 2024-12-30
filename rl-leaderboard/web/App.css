@@ -1,0 +1,247 @@
+/*
+ ===============================
+ Custom Syles
+ ===============================
+ */
+
+html,
+body {
+  background-image: linear-gradient(#062c7f, #7fb0ff);
+  margin: 0;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.container {
+  width: 95%;
+  height: auto;
+  margin: 1rem auto;
+  padding-bottom: 1rem;
+}
+
+a {
+  text-decoration: none;
+  width: 50%;
+}
+
+a:focus {
+  text-decoration: none;
+  width: 50%;
+}
+
+.content-block {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.content-block--flex {
+  display: flex;
+  justify-content: center;
+}
+
+.content-block--flex > * {
+  margin: 0 1rem;
+}
+
+.sessions-card {
+  width: 50%;
+  margin: 0 auto !important;
+}
+
+.seperate-flex {
+  justify-content: center;
+  width: 100%;
+}
+
+/*
+===============================
+Title
+===============================
+*/
+
+.title {
+  color: #f3f4f7;
+  text-align: center;
+  font: 300 40px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  height: auto;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.sub-title {
+  color: #95a5a6;
+  text-align: center;
+  font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 1rem auto;
+}
+
+.note {
+  color: #95a5a6;
+  text-align: center;
+  font: 400 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 1rem auto;
+}
+
+/*
+===============================
+Card
+===============================
+*/
+
+.card {
+  background-color: #f3f4f7;
+  margin: 0 1rem;
+}
+
+.card-header {
+  flex-wrap: wrap;
+  background-image: linear-gradient(#fc540c, #fc9c0c);
+}
+
+/*
+ ===============================
+ Player Syles
+ ===============================
+ */
+
+.players-list {
+  display: flex;
+  /* flex-wrap: wrap; */
+}
+
+@media only screen and (max-width: 1210px) {
+  .players-list {
+    flex-wrap: wrap;
+  }
+  .card {
+    margin: 0;
+  }
+  .sessions-card {
+    width: 100%;
+  }
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-around;
+}
+
+.player-header--content {
+  display: flex;
+}
+
+.player-header--content img {
+  margin-right: 1rem;
+}
+
+.player-header__name {
+  color: #000000;
+  font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: auto 0;
+  text-align: center;
+}
+
+.playlist-stats {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 33%;
+}
+
+.playlist-stats--overview {
+  flex-basis: 100%;
+  margin-bottom: 1rem;
+}
+
+.player-stats {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/*
+===============================
+Stats table
+===============================
+*/
+
+.stats__table,
+.stats__table tr {
+  border: 1px solid #000000;
+}
+
+.stats__table {
+  text-align: left;
+  margin: 0 auto;
+  color: #3498db;
+  font: 300 15px "Lato", "Open Sans", "Helvetica Nue", sans-serif;
+  letter-spacing: 2px;
+}
+
+.stats__table td,
+.stats__table th {
+  padding: 0.1rem 1rem;
+}
+
+/*
+===============================
+Sessions
+===============================
+*/
+
+.sessions-overview table:not(:first-of-type) {
+  margin-top: 1.3rem;
+}
+
+/*
+===============================
+Selector
+===============================
+*/
+
+.season-select {
+  margin-top: 0.5rem;
+}
+
+/*
+===============================
+Button
+===============================
+*/
+
+.button {
+  border-radius: 5px;
+  border-style: none;
+  margin: 1rem;
+  background-color: #ffffff;
+  transition: 0.5s ease;
+}
+
+.button a {
+  color: #3498db;
+}
+
+.button:hover {
+  background-color: #f0f0f09c;
+}
+
+/*
+===============================
+Error
+===============================
+*/
+
+#error {
+  color: #c0392b;
+}
