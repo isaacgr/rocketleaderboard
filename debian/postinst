@@ -1,0 +1,15 @@
+#!/bin/sh -ex
+
+# Enable systemd .service files
+systemctl reenable rocketleaderboard.service
+
+# example.config.ini should be readonly for etservice
+chown sunless:sunless $EXAMPLE_CONFIG_FILE
+chmod 644 $CONFIG_FILE
+
+# Allow magnum group to edit config file
+chown sunless:sunless $CONFIG_FILE
+chmod 664 $CONFIG_FILE
+
+
+exit 0

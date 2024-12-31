@@ -1,0 +1,10 @@
+Source: rocketleaderboard
+Priority: optional
+Maintainer: Isaac Rowell <isaacgrowell@gmail.com>
+Build-Depends: python3.12-dev, python3-setuptools, python3.12-venv, nodejs
+Standards-Version: 4.2.1
+
+Package: rocketleaderboard
+Architecture: amd64
+Description: Pulls info from the rocketleague.tracker.network api
+Depends: python3.12, system-log-daemon

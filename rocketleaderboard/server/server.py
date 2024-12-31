@@ -25,7 +25,7 @@ class GraphQLViewHandler():
         self._supported_versions = ['1.0']
         self._schema = strawberry.Schema(
             query=Query,
-            config=StrawberryConfig(auto_camel_case=False)
+            config=StrawberryConfig()
         )
 
     async def _get_context(
