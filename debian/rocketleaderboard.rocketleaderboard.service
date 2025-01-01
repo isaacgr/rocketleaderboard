@@ -1,34 +1,22 @@
-# Start and stop with magnum.service
 [Unit]
-After=magnum.service
-Requires=magnum.service
-PartOf=magnum.service
+Description=Rocketleague Leaderboard
 
 # Define execution environment
 [Service]
-User=shedtools
+User=rocketeer
 UMask=0027
 Restart=always
 LimitNOFILE=65535
-EnvironmentFile=-/etc/default/magnum
+EnvironmentFile=-/etc/default/system
 ExecReload=/bin/kill -SIGHUP $MAINPID
 
-# Start timing how log startup takes (it's a frequent issue)
-ExecStartPre=/opt/shedtools/bin/time_startup_begin
-
 # Start the shedtools process
-ExecStart=/opt/shedtools/bin/shedtools $SHEDTOOLS_FLAGS
+ExecStart=/opt/rocketleaderboard/bin/rocketleaderboard $ROCKETLEADERBOARD_FLAGS
 
 # Clearly log when the shedtools process has begun execution
-ExecStartPost=/bin/echo "Shedtools process has begun execution"
-
-# Create shedtools-graphql-external client
-ExecStartPost=!/opt/shedtools/bin/migration_create_shedtools_graphql_external_client
-
-# Clearly log when startup is actually complete
-ExecStartPost=/opt/shedtools/bin/time_startup_complete
+ExecStartPost=/bin/echo "rocketleaderboard process has begun execution"
 
 # Always start at boot. Comment if service is configured to start with pacemaker.
 [Install]
-WantedBy=magnum.service
+WantedBy=multi-user.target
 

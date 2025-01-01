@@ -3,13 +3,29 @@
 # Enable systemd .service files
 systemctl reenable rocketleaderboard.service
 
-# example.config.ini should be readonly for etservice
-chown sunless:sunless $EXAMPLE_CONFIG_FILE
+DEFAULTFILE=/etc/default/system
+
+# Allow magnum group to edit commandline args
+if ! grep -q 'ROCKETLEADERBOARD_FLAGS=' $DEFAULTFILE; then
+    echo 'ROCKETLEADERBOARD_FLAGS=""' >> $DEFAULTFILE
+fi
+
+chown rocketeer:rocketeer $DEFAULTFILE
+chmod 664 $DEFAULTFILE
+
+CONFIG_FILE=/var/lib/rocketleaderboard/config.ini
+EXAMPLE_CONFIG_FILE=/var/lib/rocketleaderboard/example.config.ini
+
+# example.config.ini should be readonly for the rocketeer group
+chown rocketeer:rocketeer $EXAMPLE_CONFIG_FILE
 chmod 644 $CONFIG_FILE
 
-# Allow magnum group to edit config file
-chown sunless:sunless $CONFIG_FILE
+# Allow rocketeer group to edit config file
+chown rocketeer:rocketeer $CONFIG_FILE
 chmod 664 $CONFIG_FILE
 
+# Install playwright and its dependencies
+/opt/rocketleaderboard/bin/playwright install-deps
+/opt/rocketleaderboard/bin/playwright install
 
 exit 0

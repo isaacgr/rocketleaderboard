@@ -1,0 +1,14 @@
+#!/bin/sh -ex
+
+DEFAULTFILE=/etc/default/system
+
+touch $DEFAULTFILE 
+
+# Create luser account for managing the service
+if ! id rocketeer >/dev/null 2>&1; then
+    groupadd --force --system --gid 2010 rocketeer
+	useradd --no-create-home --system --uid 2010 --gid rocketeer --shell /bin/false rocketeer
+fi
+
+chown rocketeer:rocketeer $DEFAULTFILE
+chmod 664 $DEFAULTFILE 
