@@ -1,7 +1,8 @@
-import json
+
 import logging
 from typing import Any, Dict
 from playwright.async_api import async_playwright
+from rocketleaderboard.clients.client import RlClient
 
 BASE_URL = '/api/v2'
 PLAYER_URL = '/rocket-league/standard/profile/steam/%s'
@@ -9,20 +10,16 @@ PLAYLIST_URL = PLAYER_URL + '/segments/playlist?season=%s'
 SESSIONS_URL = PLAYER_URL + '/sessions'
 
 
-log = logging.getLogger('manager.rltracker')
+log = logging.getLogger('clients.rl-tracker.client')
 
 
-class RlTrackerManager:
+class RlTrackerClient(RlClient):
 
     def __init__(
         self,
         hosts: Dict[str, Any],
     ):
         self._host = hosts['host']
-
-    @property
-    def host(self):
-        return self._host
 
     def start(self):
         pass
@@ -42,7 +39,7 @@ class RlTrackerManager:
         finally:
             return data
 
-    async def make_tracker_req(self, url: str):
+    async def make_req(self, url: str):
 
         p = await async_playwright().start()
 
