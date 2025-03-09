@@ -1,18 +1,18 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from rocketleaderboard.clients.rltracker.base import RLTrackerClientFactory
 
 log = logging.getLogger('clients.client')
 
 
-class RlClient(ABC):
+class RLClient(ABC):
 
     @abstractmethod
     def __init__(
         self,
-        hosts: Dict[str, Any],
+        factory: RLTrackerClientFactory
     ):
-        self._host = hosts['host']
+        pass
 
     @abstractmethod
     def start(self):

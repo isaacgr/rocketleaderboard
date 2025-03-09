@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from typing import Any, Dict
 
-from rocketleaderboard.clients.client import RlClient
+from rocketleaderboard.clients.client import RLClient
 
 
 class ClientFactory(ABC):
@@ -14,5 +14,5 @@ class ClientFactory(ABC):
         self._host = hosts['host']
 
     @abstractmethod
-    def get_client(self) -> RlClient:
+    def get_client(self) -> RLClient:
         pass

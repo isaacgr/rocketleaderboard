@@ -2,7 +2,8 @@
 import logging
 from typing import Any, Dict
 from playwright.async_api import async_playwright
-from rocketleaderboard.clients.client import RlClient
+from rocketleaderboard.clients.client import RLClient
+from rocketleaderboard.clients.rltracker.base import RLTrackerClientFactory
 
 BASE_URL = '/api/v2'
 PLAYER_URL = '/rocket-league/standard/profile/steam/%s'
@@ -13,13 +14,13 @@ SESSIONS_URL = PLAYER_URL + '/sessions'
 log = logging.getLogger('clients.rl-tracker.client')
 
 
-class RlTrackerClient(RlClient):
+class RLTrackerClient(RLClient):
 
     def __init__(
         self,
-        hosts: Dict[str, Any],
+        factory: RLTrackerClientFactory
     ):
-        self._host = hosts['host']
+        self.factory = factory
 
     def start(self):
         pass
@@ -52,7 +53,7 @@ class RlTrackerClient(RlClient):
 
         await page.set_extra_http_headers({"Accept-Language": "en"})
         response = await page.goto(
-            'https://' + self.host + url,
+            'https://' + self.factory.host + url,
             wait_until="networkidle",
         )
         _response = await self._handle_response(response)
@@ -61,10 +62,12 @@ class RlTrackerClient(RlClient):
 
     async def get_player(self, id: str):
         target = self.target(PLAYER_URL % id)
-        return await self.make_tracker_req(target)
+        return await self.make_req(target)
 
     async def get_playlist(self, id: str, season: int):
-        pass
+        target = self.target(PLAYLIST_URL % (id, season))
+        return await self.make_req(target)
 
     async def get_sessions(self, id: str):
-        pass
+        target = self.target(SESSIONS_URL % id)
+        return await self.make_req(target)
